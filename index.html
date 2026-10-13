@@ -1,0 +1,672 @@
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jungle Rush | Lost Temple</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--gold:#ffd45a;--glass:rgba(8,20,19,.76)}
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:#06120e;color:white;overflow:hidden;
+  user-select:none;-webkit-user-select:none
+}
+#game{position:fixed;inset:0;width:100%;height:100%;
+  display:block;touch-action:none}
+.hud{position:fixed;top:0;left:0;right:0;padding:20px;
+  display:flex;justify-content:space-between;align-items:flex-start;
+  pointer-events:none;z-index:2}
+.logo{font-size:clamp(18px,3vw,29px);font-weight:1000;
+  font-style:italic;letter-spacing:2px;color:var(--gold);
+  text-shadow:0 3px 16px #000}
+.logo small{display:block;color:white;font-size:10px;
+  letter-spacing:5px;margin-top:4px}
+.stats{display:flex;gap:10px}
+.stat{background:var(--glass);border:1px solid #ffffff2b;
+  border-radius:12px;padding:10px 16px;min-width:86px;
+  text-align:center;backdrop-filter:blur(8px)}
+.stat label{display:block;color:#b6c9bd;font-size:10px;
+  letter-spacing:1.5px;margin-bottom:5px}
+.stat strong{font-size:21px;color:var(--gold)}
+#progress{position:fixed;top:0;left:0;height:3px;width:0;
+  background:var(--gold);z-index:4;box-shadow:0 0 12px var(--gold)}
+.overlay{position:fixed;inset:0;z-index:5;display:flex;
+  align-items:center;justify-content:center;padding:20px;
+  background:linear-gradient(90deg,rgba(1,13,10,.65),rgba(1,13,10,.12),rgba(1,13,10,.65))}
+.panel{width:min(490px,100%);text-align:center;padding:35px 26px;
+  border:1px solid #ffffff35;border-radius:24px;
+  background:rgba(4,17,14,.76);backdrop-filter:blur(14px);
+  box-shadow:0 25px 100px #0008}
+.eyebrow{color:var(--gold);font-size:11px;letter-spacing:5px;
+  font-weight:bold;margin-bottom:14px}
+h1{font-size:clamp(40px,8vw,70px);font-weight:1000;
+  line-height:.94;letter-spacing:-2px;font-style:italic}
+h1 span{color:var(--gold)}
+.subtitle{color:#c1d0c6;font-size:14px;line-height:1.7;
+  margin:20px auto;max-width:340px}
+.btn{width:100%;border:0;border-radius:12px;padding:16px;
+  background:linear-gradient(135deg,#ffe58c,#f4a91d);
+  color:#182015;font-size:14px;font-weight:900;
+  letter-spacing:2px;cursor:pointer;box-shadow:0 6px 25px #f5b52a30}
+.btn:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.help{margin-top:20px;color:#a6b9ae;font-size:11px;line-height:2}
+.hidden{display:none!important}
+#toast{position:fixed;top:22%;left:50%;transform:translateX(-50%);
+  background:var(--glass);border:1px solid #ffffff35;
+  border-radius:30px;padding:10px 22px;z-index:3;
+  font-size:13px;font-weight:bold;opacity:0;transition:opacity .2s;
+  pointer-events:none}
+.mobile-controls{position:fixed;bottom:22px;left:0;right:0;
+  display:flex;justify-content:space-between;padding:0 20px;
+  z-index:3;pointer-events:none}
+.pad{display:flex;gap:9px;pointer-events:auto}
+.control{width:53px;height:53px;border-radius:15px;
+  border:1px solid #ffffff45;background:#061812b8;color:white;
+  font-size:22px;backdrop-filter:blur(8px);touch-action:none}
+.control:active{background:#c58a23}
+@media(min-width:800px){.mobile-controls{opacity:.55}.control{width:45px;height:45px}}
+@media(max-width:480px){
+ .hud{padding:13px}.stat{min-width:64px;padding:9px 8px}
+ .stat strong{font-size:17px}.stat label{font-size:9px}
+ .stats{gap:6px}.panel{padding:30px 20px}
+}
+</style>
+</head>
+<body>
+<canvas id="game"></canvas>
+<div id="progress"></div>
+
+<div class="hud">
+  <div class="logo">JUNGLE RUSH<small>LOST TEMPLE</small></div>
+  <div class="stats">
+    <div class="stat"><label>DISTANCE</label><strong id="distance">0</strong></div>
+    <div class="stat"><label>COINS</label><strong id="coins">0</strong></div>
+    <div class="stat"><label>BEST</label><strong id="best">0</strong></div>
+  </div>
+</div>
+
+<div id="toast">+1 COIN</div>
+
+<div id="menu" class="overlay">
+  <div class="panel">
+    <div class="eyebrow">◆ &nbsp; THE ANCIENT ADVENTURE &nbsp; ◆</div>
+    <h1>JUNGLE<br><span>RUSH.</span></h1>
+    <p class="subtitle">Enter the forgotten temple. Dodge ancient traps, collect golden treasures and see how far you can run.</p>
+    <button class="btn" id="start">START YOUR RUN &nbsp; ▶</button>
+    <div class="help">← → MOVE &nbsp; • &nbsp; SPACE JUMP<br>↓ SLIDE &nbsp; • &nbsp; MOBILE TOUCH CONTROLS</div>
+  </div>
+</div>
+
+<div id="gameover" class="overlay hidden">
+  <div class="panel">
+    <div class="eyebrow">◆ &nbsp; RUN COMPLETE &nbsp; ◆</div>
+    <h1>GAME<br><span>OVER.</span></h1>
+    <p class="subtitle" id="result">Your adventure has ended.</p>
+    <div style="display:flex;gap:12px;margin-bottom:18px">
+      <div class="stat" style="flex:1"><label>DISTANCE</label><strong id="finalDistance">0</strong></div>
+      <div class="stat" style="flex:1"><label>COINS</label><strong id="finalCoins">0</strong></div>
+    </div>
+    <button class="btn" id="restart">RUN AGAIN &nbsp; ↻</button>
+    <div class="help">TIP: WATCH THE ROAD AND REACT EARLY!</div>
+  </div>
+</div>
+
+<div class="mobile-controls">
+  <div class="pad">
+    <button class="control" data-action="left">◀</button>
+    <button class="control" data-action="right">▶</button>
+  </div>
+  <div class="pad">
+    <button class="control" data-action="slide">▼</button>
+    <button class="control" data-action="jump">▲</button>
+  </div>
+</div>
+
+<script>
+(() => {
+'use strict';
+
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+const $ = id => document.getElementById(id);
+
+let W=0,H=0,dpr=1;
+let state='menu',last=0,elapsed=0;
+let distance=0,coinCount=0,speed=0.36;
+let best=Number(localStorage.getItem('jungleRushBest')||0);
+let lane=0,jumpY=0,jumpV=0,slideTime=0;
+let obstacles=[],coins=[],particles=[];
+let spawnTimer=0,coinTimer=0,shake=0;
+let toastTimer=0;
+
+$('best').textContent=best;
+
+function resize(){
+  dpr=Math.min(window.devicePixelRatio||1,2);
+  W=window.innerWidth;H=window.innerHeight;
+  canvas.width=Math.round(W*dpr);
+  canvas.height=Math.round(H*dpr);
+  canvas.style.width=W+'px';canvas.style.height=H+'px';
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+window.addEventListener('resize',resize);
+resize();
+
+const rand=(a,b)=>a+Math.random()*(b-a);
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+function horizon(){return H*.34}
+function roadBottom(){return H*1.1}
+function roadWidth(y){
+  const t=clamp((y-horizon())/(roadBottom()-horizon()),0,1);
+  return W*(.09+.83*Math.pow(t,.88));
+}
+function roadX(y){
+  const t=clamp((y-horizon())/(roadBottom()-horizon()),0,1);
+  return W*.5 + Math.sin(elapsed*.0003)*W*.008*t;
+}
+function project(l,z){
+  const t=clamp(z,0,1.15);
+  const y=horizon()+Math.pow(t,1.7)*(roadBottom()-horizon());
+  const rw=roadWidth(y);
+  return {x:roadX(y)+l*rw*.29,y,s: .14+t*1.15,rw};
+}
+
+function polygon(points,fill,stroke=null){
+  ctx.beginPath();
+  points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));
+  ctx.closePath();
+  ctx.fillStyle=fill;ctx.fill();
+  if(stroke){ctx.strokeStyle=stroke;ctx.stroke()}
+}
+
+function drawBackground(){
+  const sky=ctx.createLinearGradient(0,0,0,H);
+  sky.addColorStop(0,'#102c30');
+  sky.addColorStop(.48,'#39724b');
+  sky.addColorStop(1,'#11251a');
+  ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
+
+  // distant mountains
+  polygon([
+    {x:0,y:horizon()+35},{x:W*.14,y:H*.22},
+    {x:W*.27,y:H*.35},{x:W*.42,y:H*.24},
+    {x:W*.61,y:H*.35},{x:W*.77,y:H*.23},
+    {x:W,y:H*.34},{x:W,y:H},{x:0,y:H}
+  ],'#244d3c');
+
+  // jungle silhouette
+  for(let layer=0;layer<2;layer++){
+    const base=H*(.36+layer*.055);
+    ctx.fillStyle=layer?'#112e20':'#193c2b';
+    for(let i=0;i<17;i++){
+      const x=(i/16)*W;
+      const r=W*(.035+(i%4)*.008);
+      const y=base+Math.sin(i*3.1+layer)*H*.035;
+      ctx.beginPath();ctx.moveTo(x-r,y+H*.19);
+      ctx.lineTo(x-r*.15,y-r*1.2);
+      ctx.lineTo(x+r*.25,y-r*.25);
+      ctx.lineTo(x+r,y+H*.19);ctx.fill();
+    }
+  }
+
+  // sun glow
+  const glow=ctx.createRadialGradient(W*.51,H*.27,2,W*.51,H*.27,W*.28);
+  glow.addColorStop(0,'#ffe4a344');
+  glow.addColorStop(1,'#ffe4a300');
+  ctx.fillStyle=glow;ctx.fillRect(0,0,W,H*.65);
+
+  // foreground jungle leaves
+  for(let side=0;side<2;side++){
+    for(let i=0;i<9;i++){
+      const x=side?W-i*W*.025:i*W*.025;
+      const y=H*(.28+(i%4)*.075);
+      ctx.fillStyle=i%2?'#0b2619':'#153e26';
+      ctx.beginPath();
+      ctx.ellipse(x,y,W*.045,H*.015,side?-.6:.6,0,Math.PI*2);
+      ctx.fill();
+    }
+  }
+}
+
+function drawRoad(){
+  const hy=horizon(),by=H*1.1;
+  const top=roadWidth(hy),bottom=roadWidth(by);
+  polygon([
+    {x:roadX(hy)-top/2,y:hy},
+    {x:roadX(hy)+top/2,y:hy},
+    {x:roadX(by)+bottom/2,y:by},
+    {x:roadX(by)-bottom/2,y:by}
+  ],'#514d3b');
+
+  // track surface
+  polygon([
+    {x:roadX(hy)-top*.43,y:hy},
+    {x:roadX(hy)+top*.43,y:hy},
+    {x:roadX(by)+bottom*.43,y:by},
+    {x:roadX(by)-bottom*.43,y:by}
+  ],'#746c51');
+
+  // perspective paving
+  for(let i=0;i<24;i++){
+    const z=((i/24+elapsed*.00012*speed*1.8)%1);
+    const y=hy+Math.pow(z,1.6)*(by-hy);
+    const rw=roadWidth(y)*.86;
+    ctx.strokeStyle=i%2?'#c1a97b24':'#181e1729';
+    ctx.lineWidth=1+z*2;
+    ctx.beginPath();
+    ctx.moveTo(roadX(y)-rw/2,y);
+    ctx.lineTo(roadX(y)+rw/2,y);
+    ctx.stroke();
+  }
+
+  // lane markings
+  for(let l of [-1,1]){
+    for(let i=0;i<15;i++){
+      const z=((i/15+elapsed*.00016*speed*2)%1);
+      const y=hy+Math.pow(z,1.7)*(by-hy);
+      const rw=roadWidth(y);
+      const x=roadX(y)+l*rw*.145;
+      const len=2+z*23;
+      ctx.fillStyle='#e7d5a8aa';
+      ctx.fillRect(x-1-z,y-len/2,2+z*2,len);
+    }
+  }
+
+  // track edge
+  for(let side of [-1,1]){
+    const edgeTop=roadX(hy)+side*top*.5;
+    const edgeBottom=roadX(by)+side*bottom*.5;
+    ctx.strokeStyle='#d6b96c';ctx.lineWidth=3;
+    ctx.beginPath();ctx.moveTo(edgeTop,hy);
+    ctx.lineTo(edgeBottom,by);ctx.stroke();
+  }
+}
+
+function drawTemple(){
+  const hy=horizon();
+  const cx=W*.5,base=hy+4;
+  const s=Math.min(W,H)*.13;
+  ctx.save();ctx.translate(cx,base);
+  // temple steps
+  for(let i=0;i<4;i++){
+    ctx.fillStyle=['#726e51','#5e6049','#82785a','#4d5843'][i];
+    const ww=s*(2.2-i*.25),hh=s*.15;
+    ctx.fillRect(-ww/2,-i*hh-hh,ww,hh);
+  }
+  // temple facade
+  ctx.fillStyle='#9a8d66';
+  ctx.fillRect(-s*.62,-s*1.5,s*1.24,s*.9);
+  ctx.fillStyle='#4a4938';
+  ctx.fillRect(-s*.18,-s*1.34,s*.36,s*.73);
+  ctx.fillStyle='#c4ad76';
+  ctx.fillRect(-s*.75,-s*1.62,s*1.5,s*.13);
+  // roof
+  polygon([
+    {x:-s*.82,y:-s*1.62},{x:0,y:-s*2.08},
+    {x:s*.82,y:-s*1.62}
+  ],'#756c4e');
+  ctx.restore();
+}
+
+function drawTree(x,y,s){
+  ctx.fillStyle='#362d1e';
+  ctx.fillRect(x-s*.09,y-s*.9,s*.18,s*.9);
+  for(let i=0;i<3;i++){
+    ctx.fillStyle=['#123923','#1b4a2b','#245c34'][i];
+    ctx.beginPath();
+    ctx.ellipse(x+(i-1)*s*.22,y-s*(.65+i*.13),s*.36,s*.19,
+      (i-1)*.5,0,Math.PI*2);ctx.fill();
+  }
+}
+
+function drawScenery(){
+  for(let i=0;i<13;i++){
+    const z=((i/13+elapsed*.00013*speed)%1);
+    const y=horizon()+Math.pow(z,1.7)*(H*1.1-horizon());
+    const rw=roadWidth(y);
+    const s=8+z*60;
+    drawTree(roadX(y)-rw*.5-s*.45,y,s);
+    drawTree(roadX(y)+rw*.5+s*.45,y,s);
+  }
+}
+
+function drawCoin(c){
+  const p=project(c.l,c.z);
+  const bob=Math.sin(elapsed*.006+c.phase)*3*p.s;
+  const r=11*p.s;
+  ctx.save();
+  ctx.translate(p.x,p.y-r*1.6+bob);
+  ctx.scale(.7+Math.abs(Math.sin(elapsed*.005+c.phase))*.3,1);
+  ctx.shadowColor='#ffdc4e';ctx.shadowBlur=15*p.s;
+  ctx.fillStyle='#ffcf39';
+  ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.fill();
+  ctx.shadowBlur=0;
+  ctx.strokeStyle='#fff0a0';ctx.lineWidth=Math.max(1,2*p.s);
+  ctx.beginPath();ctx.arc(0,0,r*.66,0,Math.PI*2);ctx.stroke();
+  ctx.fillStyle='#a96613';
+  ctx.font=`bold ${Math.max(8,r*1.2)}px Arial`;
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText('$',0,1*p.s);
+  ctx.restore();
+}
+
+function drawObstacle(o){
+  const p=project(o.l,o.z);
+  const w=35*p.s,h=37*p.s;
+  ctx.save();ctx.translate(p.x,p.y);
+  ctx.shadowColor='#000';ctx.shadowBlur=9*p.s;
+  if(o.type==='log'){
+    ctx.fillStyle='#754323';
+    ctx.fillRect(-w*1.05,-h*.85,w*2.1,h*.65);
+    ctx.fillStyle='#bd8650';
+    ctx.fillRect(-w*1.05,-h*.85,w*2.1,h*.15);
+    ctx.fillStyle='#442d1d';
+    for(let i=-1;i<=1;i++){
+      ctx.beginPath();ctx.arc(i*w*.6,-h*.52,h*.1,0,Math.PI*2);ctx.fill();
+    }
+  }else if(o.type==='rock'){
+    polygon([
+      {x:-w,y:0},{x:-w*.85,y:-h*.55},{x:-w*.35,y:-h},
+      {x:w*.35,y:-h*.95},{x:w,y:-h*.35},{x:w*.9,y:0}
+    ],'#62685a','#9c9f83');
+    ctx.fillStyle='#929680';
+    polygon([
+      {x:-w*.85,y:-h*.55},{x:-w*.35,y:-h},
+      {x:w*.35,y:-h*.95},{x:w*.1,y:-h*.45}
+    ],'#929680');
+  }else{
+    ctx.fillStyle='#6b5030';
+    ctx.fillRect(-w*.95,-h*1.7,w*.22,h*1.7);
+    ctx.fillRect(w*.73,-h*1.7,w*.22,h*1.7);
+    ctx.fillStyle='#bf633d';
+    ctx.fillRect(-w,-h*1.65,w*2,h*.7);
+    ctx.fillStyle='#f2b568';
+    ctx.fillRect(-w,-h*1.65,w*2,h*.15);
+  }
+  ctx.restore();
+}
+
+function drawPlayer(){
+  const baseY=H*.81;
+  const scale=Math.min(W/430,1.3);
+  const x=W*.5+lane*W*.145;
+  const y=baseY-jumpY;
+  const sliding=slideTime>0;
+  const run=Math.sin(elapsed*.018)*7;
+  ctx.save();ctx.translate(x,y);ctx.scale(scale,scale);
+
+  // shadow
+  ctx.fillStyle='#0005';
+  ctx.beginPath();ctx.ellipse(0,5+jumpY*.1,25-jumpY*.025,8,0,0,Math.PI*2);ctx.fill();
+
+  if(sliding){
+    ctx.rotate(-.08);
+    // sliding adventurer
+    ctx.fillStyle='#bf9b62';
+    ctx.fillRect(-20,-25,42,16);
+    ctx.fillStyle='#293e34';
+    ctx.fillRect(-12,-17,32,12);
+    ctx.fillStyle='#d8a575';
+    ctx.beginPath();ctx.arc(22,-20,10,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#493a2b';
+    ctx.fillRect(14,-30,17,8);
+    ctx.restore();return;
+  }
+
+  // legs
+  ctx.strokeStyle='#292d25';ctx.lineWidth=10;ctx.lineCap='round';
+  ctx.beginPath();ctx.moveTo(-7,-24);
+  ctx.lineTo(-11+run,-4);ctx.lineTo(-15+run,0);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(7,-24);
+  ctx.lineTo(12-run,-5);ctx.lineTo(16-run,0);ctx.stroke();
+
+  // boots
+  ctx.fillStyle='#32291f';
+  ctx.fillRect(-23+run,-4,14,7);
+  ctx.fillRect(8-run,-4,15,7);
+
+  // arms
+  ctx.strokeStyle='#bd916a';ctx.lineWidth=8;
+  ctx.beginPath();ctx.moveTo(-11,-52);
+  ctx.lineTo(-19-run,-36);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(11,-52);
+  ctx.lineTo(19+run,-37);ctx.stroke();
+
+  // backpack
+  ctx.fillStyle='#6d4930';
+  ctx.fillRect(9,-59,12,21);
+
+  // body
+  ctx.fillStyle='#314e3b';
+  polygon([
+    {x:-11,y:-60},{x:11,y:-60},{x:15,y:-28},
+    {x:-14,y:-28}
+  ],'#314e3b');
+  ctx.fillStyle='#bd916a';
+  ctx.beginPath();ctx.arc(0,-69,12,0,Math.PI*2);ctx.fill();
+
+  // hair
+  ctx.fillStyle='#392d22';
+  ctx.beginPath();ctx.arc(0,-73,12,Math.PI,Math.PI*2);ctx.fill();
+  ctx.fillRect(-12,-73,24,5);
+
+  // scarf
+  ctx.fillStyle='#bd4930';
+  ctx.fillRect(-10,-59,20,5);
+  ctx.restore();
+}
+
+function spawnObstacle(){
+  const l=Math.floor(rand(-1.49,1.49)+.5);
+  const type=['rock','log','gate'][Math.floor(Math.random()*3)];
+  obstacles.push({l:clamp(l,-1,1),z:0,type,hit:false});
+}
+function spawnCoinLine(){
+  const l=Math.floor(rand(-1.49,1.49)+.5);
+  const count=5+Math.floor(Math.random()*3);
+  for(let i=0;i<count;i++){
+    coins.push({l:clamp(l,-1,1),z:-i*.065,phase:Math.random()*6});
+  }
+}
+
+function startGame(){
+  state='playing';elapsed=0;distance=0;coinCount=0;
+  speed=.36;lane=0;jumpY=0;jumpV=0;slideTime=0;
+  obstacles=[];coins=[];particles=[];
+  spawnTimer=.7;coinTimer=.4;shake=0;
+  $('menu').classList.add('hidden');
+  $('gameover').classList.add('hidden');
+  updateHUD();
+}
+
+function endGame(){
+  if(state!=='playing')return;
+  state='over';shake=12;
+  best=Math.max(best,Math.floor(distance));
+  localStorage.setItem('jungleRushBest',best);
+  $('best').textContent=best;
+  $('finalDistance').textContent=Math.floor(distance);
+  $('finalCoins').textContent=coinCount;
+  $('result').textContent=distance>300
+    ?'Amazing run! The jungle could not stop you.'
+    :'The temple is unforgiving. Ready for another run?';
+  setTimeout(()=>$('gameover').classList.remove('hidden'),350);
+}
+
+function updateHUD(){
+  $('distance').textContent=Math.floor(distance);
+  $('coins').textContent=coinCount;
+  $('best').textContent=best;
+  $('progress').style.width=(distance%1000)/10+'%';
+}
+
+function showToast(){
+  $('toast').style.opacity=1;
+  toastTimer=.65;
+}
+
+function burst(x,y){
+  for(let i=0;i<9;i++){
+    particles.push({x,y,vx:rand(-100,100),vy:rand(-140,30),life:.5});
+  }
+}
+
+function move(dir){
+  if(state!=='playing')return;
+  lane=clamp(lane+dir,-1,1);
+}
+function jump(){
+  if(state!=='playing')return;
+  if(jumpY===0&&slideTime<=0)jumpV=650;
+}
+function slide(){
+  if(state==='playing'&&jumpY<8)slideTime=.72;
+}
+function action(a){
+  if(a==='left')move(-1);
+  if(a==='right')move(1);
+  if(a==='jump')jump();
+  if(a==='slide')slide();
+}
+
+window.addEventListener('keydown',e=>{
+  if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' '].includes(e.key))e.preventDefault();
+  if(state!=='playing'){
+    if(e.key==='Enter'||e.key===' ')startGame();
+    return;
+  }
+  if(e.repeat)return;
+  if(e.key==='ArrowLeft'||e.key.toLowerCase()==='a')move(-1);
+  if(e.key==='ArrowRight'||e.key.toLowerCase()==='d')move(1);
+  if(e.key==='ArrowUp'||e.key===' ')jump();
+  if(e.key==='ArrowDown'||e.key.toLowerCase()==='s')slide();
+});
+
+document.querySelectorAll('[data-action]').forEach(btn=>{
+  btn.addEventListener('pointerdown',e=>{
+    e.preventDefault();action(btn.dataset.action);
+  });
+});
+$('start').addEventListener('click',startGame);
+$('restart').addEventListener('click',startGame);
+
+// Touch swipe support
+let touchX=0,touchY=0;
+canvas.addEventListener('touchstart',e=>{
+  touchX=e.changedTouches[0].clientX;
+  touchY=e.changedTouches[0].clientY;
+},{passive:true});
+canvas.addEventListener('touchend',e=>{
+  const dx=e.changedTouches[0].clientX-touchX;
+  const dy=e.changedTouches[0].clientY-touchY;
+  if(Math.abs(dx)>25||Math.abs(dy)>25){
+    if(Math.abs(dx)>Math.abs(dy))action(dx>0?'right':'left');
+    else action(dy<0?'jump':'slide');
+  }
+},{passive:true});
+
+function update(dt){
+  elapsed+=dt*1000;
+  if(toastTimer>0){
+    toastTimer-=dt;
+    if(toastTimer<=0)$('toast').style.opacity=0;
+  }
+  if(state!=='playing')return;
+
+  distance+=dt*speed*28;
+  speed=Math.min(.78,.36+distance*.00012);
+  if(jumpY>0||jumpV>0){
+    jumpY+=jumpV*dt;
+    jumpV-=1550*dt;
+    if(jumpY<=0){jumpY=0;jumpV=0}
+  }
+  if(slideTime>0)slideTime-=dt;
+
+  spawnTimer-=dt;
+  if(spawnTimer<=0){
+    spawnObstacle();
+    spawnTimer=Math.max(.65,rand(1.0,1.6)-speed*.45);
+  }
+  coinTimer-=dt;
+  if(coinTimer<=0){
+    spawnCoinLine();coinTimer=rand(1.3,2.1);
+  }
+
+  for(const o of obstacles){
+    o.z+=dt*speed*.48;
+    if(!o.hit&&o.z>.80&&o.z<1.0&&o.l===lane){
+      const safe=o.type==='log'?jumpY>45:
+        o.type==='gate'?slideTime>0:jumpY>55;
+      if(!safe){o.hit=true;endGame();break}
+    }
+  }
+  obstacles=obstacles.filter(o=>o.z<1.12);
+
+  for(const c of coins){
+    c.z+=dt*speed*.48;
+    if(!c.hit&&c.z>.84&&c.z<.99&&c.l===lane){
+      c.hit=true;coinCount++;
+      burst(W*.5+lane*W*.145,H*.77-jumpY);
+      showToast();
+    }
+  }
+  coins=coins.filter(c=>c.z<1.12&&!c.hit);
+
+  for(const p of particles){
+    p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=260*dt;p.life-=dt;
+  }
+  particles=particles.filter(p=>p.life>0);
+  updateHUD();
+}
+
+function render(){
+  ctx.save();
+  if(shake>0){
+    ctx.translate(rand(-shake,shake),rand(-shake,shake));
+    shake=Math.max(0,shake-.7);
+  }
+  drawBackground();
+  drawTemple();
+  drawScenery();
+  drawRoad();
+
+  // Draw objects from far to near
+  const items=[
+    ...obstacles.map(o=>({z:o.z,type:'obstacle',obj:o})),
+    ...coins.map(c=>({z:c.z,type:'coin',obj:c}))
+  ].sort((a,b)=>a.z-b.z);
+
+  for(const item of items){
+    if(item.type==='coin')drawCoin(item.obj);
+    else drawObstacle(item.obj);
+  }
+  drawPlayer();
+
+  for(const p of particles){
+    ctx.globalAlpha=clamp(p.life*2,0,1);
+    ctx.fillStyle='#ffdc4e';
+    ctx.beginPath();ctx.arc(p.x,p.y,3,0,Math.PI*2);ctx.fill();
+  }
+  ctx.globalAlpha=1;
+  // cinematic vignette
+  const v=ctx.createRadialGradient(W*.5,H*.45,H*.15,W*.5,H*.5,H*.78);
+  v.addColorStop(0,'#00000000');v.addColorStop(1,'#00000055');
+  ctx.fillStyle=v;ctx.fillRect(0,0,W,H);
+  ctx.restore();
+}
+
+function loop(now){
+  const dt=Math.min((now-last)/1000||0,.033);
+  last=now;
+  update(dt);
+  render();
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
