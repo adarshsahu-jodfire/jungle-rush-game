@@ -3,68 +3,67 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>TEMPLE DASH - Lost Kingdom</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>TEMPLE RUN - PRO EDITION</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;overflow:hidden;background:#071510;color:white;font-family:Arial,sans-serif;user-select:none}
+body{margin:0;overflow:hidden;background:#07140e;color:white;font-family:Arial,sans-serif;touch-action:none}
 canvas{display:block}
-#hud{position:fixed;top:0;left:0;width:100%;padding:18px;display:flex;justify-content:space-between;align-items:flex-start;pointer-events:none}
-.brand{font-size:23px;font-weight:1000;font-style:italic;letter-spacing:2px;text-shadow:0 2px 8px #000}
-.brand span{color:#ffd45c}
-.brand small{display:block;font-size:9px;letter-spacing:5px;color:#c5d5ca;margin-top:5px}
+#hud{position:fixed;top:0;left:0;right:0;padding:18px;display:flex;justify-content:space-between;align-items:flex-start;pointer-events:none}
+.logo{font-size:25px;font-weight:1000;font-style:italic;letter-spacing:2px;text-shadow:0 2px 10px black}
+.logo span{color:#ffcf46}
+.logo small{display:block;font-size:9px;letter-spacing:5px;color:#d0e1d1;margin-top:4px}
 .stats{display:flex;gap:8px}
-.stat{background:#071a16c9;border:1px solid #ffffff36;border-radius:10px;padding:10px 14px;min-width:75px;text-align:center;backdrop-filter:blur(8px)}
-.stat small{display:block;color:#b5c7ba;font-size:9px;letter-spacing:1.5px;margin-bottom:5px}
-.stat b{font-size:20px;color:#ffdc65}
-#progress{position:fixed;top:0;left:0;width:0;height:3px;background:#ffd45c;z-index:8}
-.screen{position:fixed;inset:0;z-index:5;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(90deg,#03100bc9,#03100b32,#03100bb8)}
-.panel{width:min(450px,100%);padding:34px 27px;border:1px solid #ffffff38;border-radius:22px;background:#071912db;backdrop-filter:blur(14px);text-align:center;box-shadow:0 25px 80px #0008}
-.eyebrow{font-size:10px;color:#ffdc65;letter-spacing:4px;font-weight:bold}
-h1{font-size:clamp(43px,9vw,70px);line-height:.92;letter-spacing:-2px;font-style:italic;margin:18px 0}
-h1 span{color:#ffd45c}
-p{font-size:13px;color:#c1d1c5;line-height:1.8;margin:20px 0}
-button{font-weight:bold;cursor:pointer}
-.mainbtn{width:100%;padding:16px;border:0;border-radius:10px;background:linear-gradient(135deg,#ffe995,#e9a91e);color:#172017;font-size:14px;letter-spacing:2px}
-.hint{font-size:10px;line-height:2;color:#a8bcb0;margin-top:17px}
-.hidden{display:none!important}
-#toast{position:fixed;top:24%;left:50%;transform:translateX(-50%);background:#09251de8;border:1px solid #ffdc65;border-radius:30px;padding:10px 22px;color:#ffdc65;font-weight:bold;opacity:0;pointer-events:none;z-index:4}
-.controls{position:fixed;bottom:18px;left:0;right:0;display:flex;justify-content:space-between;padding:0 17px;pointer-events:none;z-index:4}
-.group{display:flex;gap:8px;pointer-events:auto}
-.ctrl{width:51px;height:51px;border-radius:15px;border:1px solid #ffffff50;background:#061b15c9;color:white;font-size:22px;touch-action:none}
-@media(min-width:900px){.controls{opacity:.45}.ctrl{width:43px;height:43px}}
-@media(max-width:480px){#hud{padding:12px}.brand{font-size:16px}.stat{min-width:56px;padding:8px 6px}.stat b{font-size:16px}.stats{gap:5px}.panel{padding:28px 20px}}
+.stat{min-width:72px;text-align:center;background:#061b16d9;border:1px solid #ffffff32;border-radius:11px;padding:10px 12px;backdrop-filter:blur(8px)}
+.stat small{display:block;font-size:9px;color:#b5c8b9;letter-spacing:1px;margin-bottom:5px}
+.stat b{font-size:20px;color:#ffdc69}
+#bar{position:fixed;top:0;left:0;width:0;height:3px;background:#ffcf46;z-index:9}
+.screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#06130bbd;z-index:5;padding:20px}
+.panel{width:min(440px,100%);text-align:center;padding:32px 25px;border:1px solid #ffffff3b;border-radius:22px;background:#091a14e8;box-shadow:0 25px 90px #0008;backdrop-filter:blur(15px)}
+.kicker{font-size:10px;letter-spacing:4px;color:#ffda66;font-weight:bold}
+h1{font-size:clamp(43px,9vw,69px);line-height:.9;font-style:italic;margin:20px 0;letter-spacing:-2px}
+h1 span{color:#ffcf46}
+p{color:#c2d2c6;font-size:13px;line-height:1.8;margin:22px 0}
+.main{width:100%;padding:16px;border:0;border-radius:10px;background:linear-gradient(120deg,#ffe990,#f0a71c);font-weight:900;letter-spacing:2px;color:#172015;font-size:14px}
+.hint{font-size:10px;line-height:2;color:#9fb5a5;margin-top:16px}
+.hide{display:none!important}
+.controls{position:fixed;left:0;right:0;bottom:18px;padding:0 18px;display:flex;justify-content:space-between;z-index:4;pointer-events:none}
+.group{display:flex;gap:9px;pointer-events:auto}
+.ctrl{width:54px;height:54px;border-radius:16px;background:#061b15cf;color:white;border:1px solid #ffffff50;font-size:22px;touch-action:none}
+.ctrl:active{background:#9b7229}
+#toast{position:fixed;top:25%;left:50%;transform:translateX(-50%);padding:10px 20px;background:#09271eea;border:1px solid #ffdc69;border-radius:25px;color:#ffdc69;font-weight:bold;opacity:0;z-index:4}
+@media(max-width:480px){#hud{padding:11px}.logo{font-size:16px}.stat{min-width:53px;padding:8px 5px}.stat b{font-size:16px}.stats{gap:4px}.panel{padding:27px 18px}}
 </style>
 </head>
 <body>
-<div id="progress"></div>
+<div id="bar"></div>
 <div id="hud">
- <div class="brand">TEMPLE <span>DASH</span><small>LOST KINGDOM</small></div>
+ <div class="logo">TEMPLE <span>RUN</span><small>PRO EDITION</small></div>
  <div class="stats">
   <div class="stat"><small>DISTANCE</small><b id="dist">0</b></div>
   <div class="stat"><small>COINS</small><b id="coins">0</b></div>
   <div class="stat"><small>BEST</small><b id="best">0</b></div>
  </div>
 </div>
-<div id="toast">+1 GOLD COIN</div>
+<div id="toast">+ GOLD</div>
 
 <div id="menu" class="screen">
  <div class="panel">
-  <div class="eyebrow">◆ AN ANCIENT ADVENTURE ◆</div>
-  <h1>TEMPLE<br><span>DASH.</span></h1>
-  <p>Run through the forgotten jungle temple. Dodge deadly traps, leap over fallen logs and collect ancient gold.</p>
-  <button class="mainbtn" id="start">START YOUR RUN &nbsp; ▶</button>
-  <div class="hint">← → CHANGE LANE &nbsp; • &nbsp; SPACE JUMP<br>↓ SLIDE &nbsp; • &nbsp; TOUCH CONTROLS ON MOBILE</div>
+  <div class="kicker">THE LOST TEMPLE AWAITS</div>
+  <h1>TEMPLE<br><span>RUN.</span></h1>
+  <p>Escape the ancient ruins. Run, jump, slide and collect golden treasures. How long can you survive?</p>
+  <button class="main" id="start">START RUN &nbsp; ▶</button>
+  <div class="hint">← → CHANGE LANE<br>SPACE / ↑ JUMP &nbsp; • &nbsp; ↓ SLIDE</div>
  </div>
 </div>
 
-<div id="over" class="screen hidden">
+<div id="over" class="screen hide">
  <div class="panel">
-  <div class="eyebrow">YOUR ADVENTURE ENDS HERE</div>
+  <div class="kicker">RUN COMPLETE</div>
   <h1>GAME<br><span>OVER.</span></h1>
-  <p id="message">The jungle claims another runner.</p>
-  <button class="mainbtn" id="again">RUN AGAIN &nbsp; ↻</button>
-  <div class="hint">TIP: WATCH THE ROAD AHEAD!</div>
+  <p id="result"></p>
+  <button class="main" id="again">PLAY AGAIN &nbsp; ↻</button>
+  <div class="hint">ONE MORE RUN. BEAT YOUR RECORD.</div>
  </div>
 </div>
 
@@ -82,231 +81,202 @@ button{font-weight:bold;cursor:pointer}
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}
 </script>
-
 <script type="module">
 import * as THREE from 'three';
 
 const $=id=>document.getElementById(id);
-let scene,camera,renderer,player;
-let state='menu',lane=0,jumpY=0,jumpV=0,slide=0;
-let distance=0,coinCount=0,best=Number(localStorage.getItem('templeDashBest')||0);
-let speed=18,last=0,spawn=0,coinSpawn=0,toastTime=0;
-let obstacles=[],coins=[],decor=[],roadMarks=[],dust=[];
+let scene,camera,renderer,runner;
+let state='menu',last=0,clock=0;
+let lane=0,targetX=0,jumpY=0,jumpV=0,slideT=0;
+let distance=0,coinCount=0,speed=17,best=+(localStorage.getItem('templeProBest')||0);
+let spawnT=1,coinT=1,toastT=0;
+let obstacles=[],coins=[],world=[],decor=[];
 $('best').textContent=best;
 
-const mat=(color,roughness=0.9,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
-const green=mat(0x204c2b),darkGreen=mat(0x102f20),leaf=mat(0x28663a);
-const stone=mat(0x82785c),lightStone=mat(0xb0a078),roadMat=mat(0x645d48);
-const gold= new THREE.MeshStandardMaterial({color:0xffc72e,metalness:.75,roughness:.22,emissive:0x805000,emissiveIntensity:.4});
-const brown=mat(0x674126),woodLight=mat(0x9c6738),shirt=mat(0x385941),skin=mat(0xc79468);
+const material=(c,r=.8,m=0)=>new THREE.MeshStandardMaterial({color:c,roughness:r,metalness:m});
+const M={
+ road:material(0x68604a),stone:material(0x898069),stone2:material(0xb1a17b),
+ jungle:material(0x1a4628),leaf:material(0x27643a),bark:material(0x513522),
+ gold:material(0xffc52c,.23,.8),shirt:material(0x345b43),
+ skin:material(0xc58c62),pants:material(0x34372b),boot:material(0x201d17),
+ wood:material(0x85512c),dark:material(0x17231a),trim:material(0xd2b77d)
+};
 const laneX=[-2.35,0,2.35];
 
-function box(parent,w,h,d,material,x,y,z){
- const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);
- m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;
+function addBox(parent,w,h,d,mat,x,y,z){
+ const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);
+ o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o;
 }
-function sphere(parent,r,material,x,y,z){
- const m=new THREE.Mesh(new THREE.SphereGeometry(r,12,10),material);
- m.position.set(x,y,z);m.castShadow=true;parent.add(m);return m;
+function addSphere(parent,r,mat,x,y,z){
+ const o=new THREE.Mesh(new THREE.SphereGeometry(r,12,10),mat);
+ o.position.set(x,y,z);o.castShadow=true;parent.add(o);return o;
 }
-function group(parent,x=0,y=0,z=0){
+function addCyl(parent,r1,r2,h,mat,x,y,z,n=10){
+ const o=new THREE.Mesh(new THREE.CylinderGeometry(r1,r2,h,n),mat);
+ o.position.set(x,y,z);o.castShadow=true;parent.add(o);return o;
+}
+function addGroup(parent,x=0,y=0,z=0){
  const g=new THREE.Group();g.position.set(x,y,z);parent.add(g);return g;
 }
-function cylinder(parent,rt,rb,h,material,x,y,z,segments=10){
- const m=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,segments),material);
- m.position.set(x,y,z);m.castShadow=true;parent.add(m);return m;
+
+function createTree(x,z,s=1){
+ const g=addGroup(scene,x,0,z);g.scale.setScalar(s);
+ addCyl(g,.2,.34,3.5,M.bark,0,1.75,0);
+ for(let i=0;i<6;i++){
+  const crown=addSphere(g,1.05,i%2?M.jungle:M.leaf,
+    Math.sin(i*4)*.5,3.0+i*.47,Math.cos(i*2)*.45);
+  crown.scale.set(1.3,.8,1.05);
+ }
+ decor.push(g);
 }
 
-function makeTree(x,z,scale=1){
- const g=group(scene,x,0,z);g.scale.setScalar(scale);
- cylinder(g,.24,.38,3.8,brown,0,1.9,0);
- for(let i=0;i<5;i++){
-  const crown=sphere(g,1.2-i*.1,i%2?green:leaf,
-    Math.sin(i*4)*.55,3.5+i*.65,Math.cos(i*3)*.45);
-  crown.scale.set(1.25,.75,1);
+function createTemple(){
+ const g=addGroup(scene,0,0,-86);
+ for(let i=0;i<5;i++)addBox(g,8-i*.55,.3,.8,M.stone,0,.15+i*.3,-i*.8);
+ for(const x of [-3.1,3.1]){
+  addBox(g,.8,5.6,1,M.stone2,x,2.8,-4);
+  addBox(g,1.05,.3,1.2,M.stone,x,5.7,-4);
+  addBox(g,.9,.13,1.1,M.trim,x,4.7,-3.95);
  }
- // vines
- for(let i=0;i<3;i++){
-  const v=cylinder(g,.035,.025,2.4,green,Math.sin(i*3)*.45,2.5,i*.2-.2,6);
-  v.rotation.z=.25+Math.sin(i)*.25;
- }
- decor.push({obj:g,kind:'tree'});
+ addBox(g,8,.65,1.3,M.stone,0,6.2,-4);
+ addBox(g,7.2,.25,1.4,M.trim,0,6.7,-4);
+ const roof=new THREE.Mesh(new THREE.ConeGeometry(5,2.6,4),M.stone);
+ roof.position.set(0,7.8,-4);roof.rotation.y=Math.PI/4;roof.scale.y=.7;g.add(roof);
+ addBox(g,2.8,4,.15,M.dark,0,2,-3.42);
+ for(let i=0;i<7;i++)addBox(g,.4,.4,.15,M.trim,-2.7+i*.9,5.1,-3.3);
 }
 
-function makeTemple(){
- const g=group(scene,0,0,-88);
- // broad stairway
- for(let i=0;i<5;i++){
-  box(g,8-i*.75,.35,.9,stone,0,.18+i*.35,-i*.9);
- }
- // pillars and lintels
- for(const x of [-3.15,3.15]){
-  box(g,.75,6,.8,lightStone,x,3,-4.5);
-  box(g,1.05,.28,1.1,stone,x,1,.0);
-  for(let y=1.3;y<5;y+=1.15){
-   box(g,.83,.1,.87,stone,x,y,-4.5);
-  }
- }
- box(g,8,.9,1.1,stone,0,6.2,-4.5);
- box(g,7.1,.3,1.3,lightStone,0,6.8,-4.5);
- // triangular roof
- const roof=new THREE.Mesh(new THREE.ConeGeometry(5.1,2.8,4),stone);
- roof.position.set(0,8,-4.5);roof.rotation.y=Math.PI/4;roof.scale.set(1,.65,.45);roof.castShadow=true;g.add(roof);
- // dark entrance
- box(g,2.8,4,.25,mat(0x101c16),0,2,-3.95);
- // carved decorative blocks
- for(let i=0;i<7;i++){
-  box(g,.45,.45,.12,lightStone,-2.7+i*.9,5.1,-3.85);
- }
-}
+function createRunner(){
+ runner=addGroup(scene,0,0,2);
 
-function makeRock(x,z,s=1){
- const g=group(scene,x,0,z);g.scale.setScalar(s);
- const m=new THREE.Mesh(new THREE.DodecahedronGeometry(1,1),stone);
- m.scale.set(.7,.8,.7);m.position.y=.68;m.castShadow=true;g.add(m);
- return g;
-}
-
-function makeRoad(){
- // road surface and dirt shoulders
- box(scene,8,.22,190,roadMat,0,-.16,-39);
- box(scene,18,.18,190,mat(0x263e27),0,-.31,-39);
- for(let x of [-4.08,4.08]){
-  box(scene,.13,.12,190,lightStone,x,-.03,-39);
- }
- // paving slabs
- for(let z=9;z>-130;z-=3.5){
-  const line=box(scene,7.85,.025,.045,mat(0x393b2d),0,-.035,z);
-  roadMarks.push(line);
- }
- // lane dashed markings
- for(let x of [-1.18,1.18]){
-  for(let z=8;z>-125;z-=7){
-   const line=box(scene,.045,.035,2,mat(0xc9b989),x,-.015,z);
-   roadMarks.push(line);
-  }
- }
- // jungle edges
- for(let z=10;z>-130;z-=8){
-  makeTree(-6.2+Math.sin(z)*.8,z,1.2+Math.sin(z*2)*.2);
-  makeTree(6.2+Math.cos(z)*.8,z-3,1.1+Math.cos(z)*.15);
-  if(z%16<1){
-   makeTree(-8,z-3,.85);
-   makeTree(8,z-7,.9);
-  }
- }
- makeTemple();
-}
-
-function makePlayer(){
- player=group(scene,0,0,2);
  // backpack
- box(player,.68,.92,.36,brown,.43,1.4,.08);
- box(player,.14,.7,.1,woodLight,.43,1.42,-.13);
- // torso and waist
- box(player,.85,1.05,.43,shirt,0,1.65,0);
- box(player,.72,.25,.47,brown,0,1.08,0);
+ addBox(runner,.72,.85,.4,M.wood,.4,1.5,.1);
+ addBox(runner,.86,1.05,.44,M.shirt,0,1.58,0);
+ addBox(runner,.76,.2,.48,M.wood,0,1.03,0);
+
  // head
- sphere(player,.34,skin,0,2.48,0);
- // hair and band
- sphere(player,.35,mat(0x34271d),0,2.65,.015);
- box(player,.72,.12,.42,woodLight,0,2.48,-.01);
- // face looks down the track (toward -Z)
- sphere(player,.055,mat(0x171812),-.12,2.49,-.3);
- sphere(player,.055,mat(0x171812),.12,2.49,-.3);
- box(player,.55,.12,brown,0,2.21,-.03);
- // arms
- const arms=[];
- for(let s of [-1,1]){
-  const arm=box(player,.24,.88,.27,skin,s*.55,1.65,0);
-  arm.rotation.z=s*.18;arms.push(arm);
+ const head=addGroup(runner,0,2.35,0);
+ addSphere(head,.31,M.skin,0,0,0);
+ addSphere(head,.32,M.bark,0,.1,.01);
+ addBox(head,.7,.11,.4,M.trim,0,.08,-.02);
+ addSphere(head,.045,M.dark,-.11,-.015,-.28);
+ addSphere(head,.045,M.dark,.11,-.015,-.28);
+
+ runner.userData={head,arms:[],legs:[],boots:[]};
+
+ // Limb pivot points are at the shoulder/hip, giving proper running motion.
+ for(const side of [-1,1]){
+  const arm=addGroup(runner,side*.48,1.92,0);
+  addBox(arm,.23,.7,.25,M.skin,0,-.35,0);
+  addBox(arm,.27,.23,.28,M.shirt,0,-.08,0);
+  runner.userData.arms.push(arm);
+
+  const leg=addGroup(runner,side*.23,1.0,0);
+  addBox(leg,.31,.72,.32,M.pants,0,-.36,0);
+  addBox(leg,.36,.18,.49,M.boot,0,-.72,-.09);
+  runner.userData.legs.push(leg);
  }
- // legs and boots
- const legs=[];
- for(let s of [-1,1]){
-  const leg=box(player,.31,.82,.34,mat(0x30392e),s*.23,.52,0);
-  legs.push(leg);
-  box(player,.38,.2,.55,mat(0x211c16),s*.23,.12,-.08);
- }
- player.userData={arms,legs};
 }
 
-function makeObstacle(type,l,z){
- const g=group(scene,laneX[l+1],0,z);
+function createObstacle(type,l,z){
+ const g=addGroup(scene,laneX[l+1],0,z);
  if(type==='log'){
-  cylinder(g,.4,.4,2.7,woodLight,0,.53,0,12).rotation.z=Math.PI/2;
-  cylinder(g,.32,.32,.035,brown,0,.53,1.36,12);
-  for(let i=-1;i<=1;i++){
-   const band=cylinder(g,.414,.414,.12,brown,i*.65,.53,0,12);
+  const log=addCyl(g,.38,.38,2.5,M.wood,0,.45,0,12);
+  log.rotation.z=Math.PI/2;
+  for(let x of [-.65,.65]){
+   const band=addCyl(g,.405,.405,.12,M.bark,x,.45,0,12);
    band.rotation.z=Math.PI/2;
   }
  }else if(type==='gate'){
-  box(g,2.3,.55,.4,mat(0x8d4d2e),0,2.1,0);
-  box(g,.25,2.4,.4,brown,-1.05,1.15,0);
-  box(g,.25,2.4,.4,brown,1.05,1.15,0);
-  box(g,2.5,.12,.5,woodLight,0,2.43,0);
+  addBox(g,2.15,.45,.4,M.wood,0,2.05,0);
+  addBox(g,.25,2.4,.4,M.bark,-1,1.15,0);
+  addBox(g,.25,2.4,.4,M.bark,1,1.15,0);
+  addBox(g,2.35,.13,.5,M.trim,0,2.32,0);
  }else{
-  const m=new THREE.Mesh(new THREE.DodecahedronGeometry(.85,1),mat(0x74796a));
-  m.scale.set(1,.9,.8);m.position.y=.7;m.castShadow=true;g.add(m);
-  const top=new THREE.Mesh(new THREE.DodecahedronGeometry(.35,0),mat(0x999984));
-  top.position.set(-.2,1.1,-.2);g.add(top);
+  const rock=new THREE.Mesh(new THREE.DodecahedronGeometry(.8,1),M.stone);
+  rock.scale.set(1,.9,.85);rock.position.y=.68;rock.castShadow=true;g.add(rock);
+  addSphere(g,.23,M.stone2,-.25,1.05,-.1);
  }
  obstacles.push({obj:g,type,l,hit:false});
 }
 
-function makeCoinLine(){
+function createCoins(){
  const l=Math.floor(Math.random()*3)-1;
- const n=5+Math.floor(Math.random()*3);
- for(let i=0;i<n;i++){
-  const g=group(scene,laneX[l+1],1.35,-36-i*2.1);
-  const c=new THREE.Mesh(new THREE.TorusGeometry(.32,.105,10,20),gold);
-  c.rotation.y=Math.PI/2;g.add(c);
-  const inner=new THREE.Mesh(new THREE.TorusGeometry(.19,.035,8,16),mat(0xffe99b,.25,.4));
+ for(let i=0,n=5+Math.floor(Math.random()*3);i<n;i++){
+  const g=addGroup(scene,laneX[l+1],1.45,-42-i*2);
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(.3,.09,10,24),M.gold);
+  ring.rotation.y=Math.PI/2;g.add(ring);
+  const inner=new THREE.Mesh(new THREE.TorusGeometry(.17,.035,8,18),M.trim);
   inner.rotation.y=Math.PI/2;g.add(inner);
-  coins.push({obj:g,l,got:false,phase:Math.random()*6});
+  coins.push({obj:g,l,got:false,phase:Math.random()*7});
+ }
+}
+
+function createWorld(){
+ addBox(scene,180,.5,220,M.jungle,0,-.55,-40);
+ addBox(scene,8,.2,190,M.road,0,-.17,-39);
+ for(const x of [-4.05,4.05])addBox(scene,.12,.13,190,M.trim,x,-.02,-39);
+
+ // paving slabs and lane markers
+ for(let z=8;z>-130;z-=3.4){
+  const o=addBox(scene,7.8,.025,.045,M.bark,0,-.04,z);world.push(o);
+ }
+ for(const x of [-1.18,1.18]){
+  for(let z=7;z>-130;z-=7){
+   const o=addBox(scene,.045,.03,1.8,M.trim,x,-.005,z);world.push(o);
+  }
+ }
+ for(let z=8;z>-120;z-=9){
+  createTree(-6.3+Math.sin(z)*.7,z,1.1);
+  createTree(6.3+Math.cos(z)*.7,z-3,1.05);
+ }
+ createTemple();
+ // stone ruins
+ for(let z=-17;z>-100;z-=23){
+  for(const side of [-1,1]){
+   const x=side*5.15;
+   addBox(scene,.55,2.6,.7,M.stone,x,1.3,z);
+   addBox(scene,.85,.23,.9,M.trim,x,2.7,z);
+  }
  }
 }
 
 function reset(){
- lane=0;jumpY=0;jumpV=0;slide=0;
- distance=0;coinCount=0;speed=18;spawn=.8;coinSpawn=1;
  obstacles.forEach(o=>scene.remove(o.obj));obstacles=[];
  coins.forEach(c=>scene.remove(c.obj));coins=[];
- player.position.set(0,0,2);
- // reset scrolling objects
- for(const d of decor){
-  if(d.kind==='tree'){
-   d.obj.position.z=-10-Math.random()*110;
-  }
- }
- roadMarks.forEach(m=>{m.position.z=-Math.random()*120});
- $('dist').textContent='0';$('coins').textContent='0';
- $('progress').style.width='0';
+ distance=0;coinCount=0;speed=17;
+ lane=0;targetX=0;jumpY=0;jumpV=0;slideT=0;
+ spawnT=.8;coinT=1;clock=0;
+ runner.position.set(0,0,2);runner.scale.set(1,1,1);
+ runner.rotation.set(0,0,0);
+ runner.userData.legs.forEach(x=>x.rotation.set(0,0,0));
+ runner.userData.arms.forEach(x=>x.rotation.set(0,0,0));
+ world.forEach(o=>o.position.z=-Math.random()*120);
+ decor.forEach(o=>o.position.z=-Math.random()*115);
+ $('dist').textContent=0;$('coins').textContent=0;
+ $('bar').style.width='0';
 }
-
 function start(){
  reset();state='playing';
- $('menu').classList.add('hidden');$('over').classList.add('hidden');
+ $('menu').classList.add('hide');$('over').classList.add('hide');
 }
-
 function end(){
  if(state!=='playing')return;
  state='over';
  best=Math.max(best,Math.floor(distance));
- localStorage.setItem('templeDashBest',best);
+ localStorage.setItem('templeProBest',best);
  $('best').textContent=best;
- $('message').textContent=`You ran ${Math.floor(distance)} metres and collected ${coinCount} gold coins. Can you beat your record?`;
- $('over').classList.remove('hidden');
+ $('result').textContent=`Distance: ${Math.floor(distance)} m | Gold coins: ${coinCount}. Try again and beat your record!`;
+ $('over').classList.remove('hide');
 }
 
 function act(a){
  if(state!=='playing')return;
  if(a==='left')lane=Math.max(-1,lane-1);
  if(a==='right')lane=Math.min(1,lane+1);
- if(a==='jump'&&jumpY===0&&slide<=0)jumpV=10.5;
- if(a==='slide'&&jumpY<.3)slide=.8;
+ if(a==='jump'&&jumpY===0&&slideT<=0)jumpV=10.5;
+ if(a==='slide'&&jumpY<.3)slideT=.75;
 }
-
 window.addEventListener('keydown',e=>{
  if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' '].includes(e.key))e.preventDefault();
  if(state!=='playing'){
@@ -322,34 +292,29 @@ window.addEventListener('keydown',e=>{
 document.querySelectorAll('[data-a]').forEach(b=>{
  b.addEventListener('pointerdown',e=>{e.preventDefault();act(b.dataset.a)});
 });
-$('start').onclick=start;
-$('again').onclick=start;
+$('start').onclick=start;$('again').onclick=start;
 
-// Touch swipes
 let sx=0,sy=0;
-rendererTouch();
-function rendererTouch(){
- document.addEventListener('touchstart',e=>{
-  if(e.target.closest('button'))return;
-  sx=e.changedTouches[0].clientX;sy=e.changedTouches[0].clientY;
- },{passive:true});
- document.addEventListener('touchend',e=>{
-  if(e.target.closest('button'))return;
-  const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;
-  if(Math.abs(dx)>25||Math.abs(dy)>25){
-   if(Math.abs(dx)>Math.abs(dy))act(dx>0?'right':'left');
-   else act(dy<0?'jump':'slide');
-  }
- },{passive:true});
-}
+document.addEventListener('touchstart',e=>{
+ if(e.target.closest('button'))return;
+ sx=e.changedTouches[0].clientX;sy=e.changedTouches[0].clientY;
+},{passive:true});
+document.addEventListener('touchend',e=>{
+ if(e.target.closest('button'))return;
+ const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;
+ if(Math.abs(dx)>30||Math.abs(dy)>30){
+  if(Math.abs(dx)>Math.abs(dy))act(dx>0?'right':'left');
+  else act(dy<0?'jump':'slide');
+ }
+},{passive:true});
 
 function init(){
  scene=new THREE.Scene();
- scene.background=new THREE.Color(0x9bc6a4);
- scene.fog=new THREE.Fog(0x8aaf8c,32,115);
+ scene.background=new THREE.Color(0x9abca0);
+ scene.fog=new THREE.Fog(0x9abca0,35,110);
 
  camera=new THREE.PerspectiveCamera(65,innerWidth/innerHeight,.1,220);
- camera.position.set(0,5.1,9.5);
+ camera.position.set(0,5.3,10);
  camera.lookAt(0,1,-9);
 
  renderer=new THREE.WebGLRenderer({antialias:true});
@@ -362,621 +327,113 @@ function init(){
  renderer.toneMappingExposure=1.15;
  document.body.appendChild(renderer.domElement);
 
- scene.add(new THREE.HemisphereLight(0xc9e7ff,0x314222,2.1));
- const sun=new THREE.DirectionalLight(0xffe1a0,3);
- sun.position.set(-12,22,10);
- sun.castShadow=true;
+ scene.add(new THREE.HemisphereLight(0xd9f2ff,0x354626,2));
+ const sun=new THREE.DirectionalLight(0xffe3ac,3);
+ sun.position.set(-12,22,12);sun.castShadow=true;
  sun.shadow.mapSize.set(1024,1024);
- sun.shadow.camera.left=-15;sun.shadow.camera.right=15;
- sun.shadow.camera.top=20;sun.shadow.camera.bottom=-15;
  scene.add(sun);
 
- // distant misty jungle backdrop
- const back=box(scene,170,35,3,green,0,13,-105);
- back.material=mat(0x345b3e);
- // ground
- box(scene,180,.5,210,mat(0x183923),0,-.55,-43);
-
- makeRoad();
- makePlayer();
-
- // ancient ruins alongside the track
- for(let z=-18;z>-100;z-=24){
-  for(const side of [-1,1]){
-   const x=side*5.25;
-   box(scene,.5,2.5,.6,stone,x,1.25,z);
-   box(scene,.8,.22,.8,lightStone,x,2.6,z);
-   box(scene,.58,.13,.64,green,x,2.75,z);
-  }
+ // distant mountains and jungle silhouettes
+ for(let i=0;i<14;i++){
+  const x=-65+i*10;
+  const mountain=new THREE.Mesh(new THREE.ConeGeometry(10+Math.random()*8,18+Math.random()*18,5),M.jungle);
+  mountain.position.set(x,5,-105-Math.random()*15);scene.add(mountain);
  }
+ createWorld();
+ createRunner();
+
  window.addEventListener('resize',()=>{
-  camera.aspect=innerWidth/innerHeight;
-  camera.updateProjectionMatrix();
+  camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
   renderer.setSize(innerWidth,innerHeight);
  });
 }
 
 function update(dt){
  if(state!=='playing')return;
- distance+=speed*dt*.85;
- speed=Math.min(32,18+distance*.025);
- spawn-=dt;coinSpawn-=dt;
- if(spawn<=0){
+ clock+=dt;distance+=speed*dt*.85;
+ speed=Math.min(32,17+distance*.025);
+ spawnT-=dt;coinT-=dt;
+
+ if(spawnT<=0){
   const types=['rock','log','gate'];
-  makeObstacle(types[Math.floor(Math.random()*types.length)],Math.floor(Math.random()*3)-1,-65);
-  spawn=Math.max(.8,1.45-distance*.0005+Math.random()*.5);
+  createObstacle(types[Math.floor(Math.random()*3)],Math.floor(Math.random()*3)-1,-65);
+  spawnT=Math.max(.85,1.45-distance*.00045+Math.random()*.4);
  }
- if(coinSpawn<=0){makeCoinLine();coinSpawn=2.3+Math.random()*1.1}
+ if(coinT<=0){createCoins();coinT=2.3+Math.random()}
 
- jumpY+=jumpV*dt;
- jumpV-=25*dt;
- if(jumpY<0){jumpY=0;jumpV=0}
- if(slide>0)slide-=dt;
+ // Jump physics
+ if(jumpY>0||jumpV>0){
+  jumpY+=jumpV*dt;jumpV-=25*dt;
+  if(jumpY<0){jumpY=0;jumpV=0}
+ }
+ if(slideT>0)slideT-=dt;
 
- // animate running limbs
- const run=Math.sin(performance.now()*.014)*.65;
- player.position.x=THREE.MathUtils.lerp(player.position.x,laneX[lane+1],Math.min(1,dt*12));
- player.position.y=jumpY;
- if(slide>0){
-  player.scale.y=.58;
-  player.position.y=jumpY;
+ targetX=laneX[lane+1];
+ runner.position.x=THREE.MathUtils.damp(runner.position.x,targetX,12,dt);
+ runner.position.y=jumpY;
+
+ const moving=Math.sin(clock*speed*1.25);
+ if(slideT>0){
+  runner.scale.y=THREE.MathUtils.damp(runner.scale.y,.58,16,dt);
+  runner.rotation.x=THREE.MathUtils.damp(runner.rotation.x,.1,12,dt);
  }else{
-  player.scale.y=1;
-  player.userData.legs[0].rotation.x=run;
-  player.userData.legs[1].rotation.x=-run;
-  player.userData.arms[0].rotation.x=-run*.8;
-  player.userData.arms[1].rotation.x=run*.8;
+  runner.scale.y=THREE.MathUtils.damp(runner.scale.y,1,16,dt);
+  runner.rotation.x=THREE.MathUtils.damp(runner.rotation.x,0,12,dt);
+  runner.userData.legs[0].rotation.x=moving*.72;
+  runner.userData.legs[1].rotation.x=-moving*.72;
+  runner.userData.arms[0].rotation.x=-moving*.8;
+  runner.userData.arms[1].rotation.x=moving*.8;
  }
- player.rotation.z=THREE.MathUtils.lerp(player.rotation.z,-(laneX[lane+1]-player.position.x)*.08,.15);
+ runner.rotation.z=THREE.MathUtils.damp(runner.rotation.z,(targetX-runner.position.x)*-.13,10,dt);
 
- // objects approach the runner
  for(const o of obstacles){
   o.obj.position.z+=speed*dt;
-  if(!o.hit&&o.obj.position.z>-.6&&o.obj.position.z<3.0&&o.l===lane){
-   const safe=o.type==='log'?jumpY>1.0:
-    o.type==='gate'?slide>0:jumpY>1.25;
+  if(!o.hit&&Math.abs(o.obj.position.z-2)<1.35&&Math.abs(o.obj.position.x-runner.position.x)<.85){
+   const safe=o.type==='log'?jumpY>1.05:o.type==='gate'?slideT>0:jumpY>1.25;
    if(!safe){o.hit=true;end();break}
   }
  }
  obstacles=obstacles.filter(o=>{
-  if(o.obj.position.z>12){scene.remove(o.obj);return false}
-  return true;
+  if(o.obj.position.z>12){scene.remove(o.obj);return false}return true;
  });
 
  for(const c of coins){
   c.obj.position.z+=speed*dt;
-  c.obj.rotation.y+=dt*2.8;
-  c.obj.position.y=1.35+Math.sin(performance.now()*.004+c.phase)*.13;
-  if(!c.got&&c.obj.position.z>-.7&&c.obj.position.z<3&&c.l===lane){
-   c.got=true;coinCount++;
-   $('coins').textContent=coinCount;
-   $('toast').style.opacity=1;toastTime=.5;
+  c.obj.rotation.y+=dt*2.5;
+  c.obj.position.y=1.45+Math.sin(clock*4+c.phase)*.12;
+  if(!c.got&&Math.abs(c.obj.position.z-2)<1.3&&Math.abs(c.obj.position.x-runner.position.x)<.9){
+   c.got=true;coinCount++;$('coins').textContent=coinCount;
+   $('toast').style.opacity=1;toastT=.55;
   }
  }
  coins=coins.filter(c=>{
-  if(c.got||c.obj.position.z>12){scene.remove(c.obj);return false}
-  return true;
+  if(c.got||c.obj.position.z>12){scene.remove(c.obj);return false}return true;
  });
- if(toastTime>0){toastTime-=dt;if(toastTime<=0)$('toast').style.opacity=0}
+ if(toastT>0){toastT-=dt;if(toastT<=0)$('toast').style.opacity=0}
 
- // Move the ground detail to create a sense of speed
- for(const m of roadMarks){
-  m.position.z+=speed*dt;
-  if(m.position.z>12)m.position.z=-120;
+ for(const o of world){
+  o.position.z+=speed*dt;
+  if(o.position.z>12)o.position.z-=130;
  }
- for(const d of decor){
-  d.obj.position.z+=speed*dt*.75;
-  if(d.obj.position.z>18)d.obj.position.z=-115-Math.random()*20;
+ for(const o of decor){
+  o.position.z+=speed*dt*.85;
+  if(o.position.z>18)o.position.z-=130;
  }
+
+ camera.position.x=THREE.MathUtils.damp(camera.position.x,runner.position.x*.28,3,dt);
+ camera.position.y=THREE.MathUtils.damp(camera.position.y,5.3+jumpY*.12,3,dt);
+ camera.lookAt(runner.position.x*.2,1.1+jumpY*.12,-9);
 
  $('dist').textContent=Math.floor(distance);
  $('best').textContent=best;
- $('progress').style.width=(distance%500)/5+'%';
-
- // Camera follows lane changes smoothly
- camera.position.x=THREE.MathUtils.lerp(camera.position.x,player.position.x*.38,dt*2.5);
- camera.lookAt(player.position.x*.17,1.2,-10);
+ $('bar').style.width=(distance%500)/5+'%';
 }
 
 function animate(now){
  requestAnimationFrame(animate);
- const dt=Math.min((now-last)/1000||0,.035);last=now;
- update(dt);
- renderer.render(scene,camera);
+ const dt=Math.min((now-last)/1000||0,.033);last=now;
+ update(dt);renderer.render(scene,camera);
 }
-
-init();
-requestAnimationFrame(animate);
-</script>
-</body>
-</html>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>TEMPLE DASH - Lost Kingdom</title>
-<style>
-*{box-sizing:border-box}
-body{margin:0;overflow:hidden;background:#071510;color:white;font-family:Arial,sans-serif;user-select:none}
-canvas{display:block}
-#hud{position:fixed;top:0;left:0;width:100%;padding:18px;display:flex;justify-content:space-between;align-items:flex-start;pointer-events:none}
-.brand{font-size:23px;font-weight:1000;font-style:italic;letter-spacing:2px;text-shadow:0 2px 8px #000}
-.brand span{color:#ffd45c}
-.brand small{display:block;font-size:9px;letter-spacing:5px;color:#c5d5ca;margin-top:5px}
-.stats{display:flex;gap:8px}
-.stat{background:#071a16c9;border:1px solid #ffffff36;border-radius:10px;padding:10px 14px;min-width:75px;text-align:center;backdrop-filter:blur(8px)}
-.stat small{display:block;color:#b5c7ba;font-size:9px;letter-spacing:1.5px;margin-bottom:5px}
-.stat b{font-size:20px;color:#ffdc65}
-#progress{position:fixed;top:0;left:0;width:0;height:3px;background:#ffd45c;z-index:8}
-.screen{position:fixed;inset:0;z-index:5;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(90deg,#03100bc9,#03100b32,#03100bb8)}
-.panel{width:min(450px,100%);padding:34px 27px;border:1px solid #ffffff38;border-radius:22px;background:#071912db;backdrop-filter:blur(14px);text-align:center;box-shadow:0 25px 80px #0008}
-.eyebrow{font-size:10px;color:#ffdc65;letter-spacing:4px;font-weight:bold}
-h1{font-size:clamp(43px,9vw,70px);line-height:.92;letter-spacing:-2px;font-style:italic;margin:18px 0}
-h1 span{color:#ffd45c}
-p{font-size:13px;color:#c1d1c5;line-height:1.8;margin:20px 0}
-button{font-weight:bold;cursor:pointer}
-.mainbtn{width:100%;padding:16px;border:0;border-radius:10px;background:linear-gradient(135deg,#ffe995,#e9a91e);color:#172017;font-size:14px;letter-spacing:2px}
-.hint{font-size:10px;line-height:2;color:#a8bcb0;margin-top:17px}
-.hidden{display:none!important}
-#toast{position:fixed;top:24%;left:50%;transform:translateX(-50%);background:#09251de8;border:1px solid #ffdc65;border-radius:30px;padding:10px 22px;color:#ffdc65;font-weight:bold;opacity:0;pointer-events:none;z-index:4}
-.controls{position:fixed;bottom:18px;left:0;right:0;display:flex;justify-content:space-between;padding:0 17px;pointer-events:none;z-index:4}
-.group{display:flex;gap:8px;pointer-events:auto}
-.ctrl{width:51px;height:51px;border-radius:15px;border:1px solid #ffffff50;background:#061b15c9;color:white;font-size:22px;touch-action:none}
-@media(min-width:900px){.controls{opacity:.45}.ctrl{width:43px;height:43px}}
-@media(max-width:480px){#hud{padding:12px}.brand{font-size:16px}.stat{min-width:56px;padding:8px 6px}.stat b{font-size:16px}.stats{gap:5px}.panel{padding:28px 20px}}
-</style>
-</head>
-<body>
-<div id="progress"></div>
-<div id="hud">
- <div class="brand">TEMPLE <span>DASH</span><small>LOST KINGDOM</small></div>
- <div class="stats">
-  <div class="stat"><small>DISTANCE</small><b id="dist">0</b></div>
-  <div class="stat"><small>COINS</small><b id="coins">0</b></div>
-  <div class="stat"><small>BEST</small><b id="best">0</b></div>
- </div>
-</div>
-<div id="toast">+1 GOLD COIN</div>
-
-<div id="menu" class="screen">
- <div class="panel">
-  <div class="eyebrow">◆ AN ANCIENT ADVENTURE ◆</div>
-  <h1>TEMPLE<br><span>DASH.</span></h1>
-  <p>Run through the forgotten jungle temple. Dodge deadly traps, leap over fallen logs and collect ancient gold.</p>
-  <button class="mainbtn" id="start">START YOUR RUN &nbsp; ▶</button>
-  <div class="hint">← → CHANGE LANE &nbsp; • &nbsp; SPACE JUMP<br>↓ SLIDE &nbsp; • &nbsp; TOUCH CONTROLS ON MOBILE</div>
- </div>
-</div>
-
-<div id="over" class="screen hidden">
- <div class="panel">
-  <div class="eyebrow">YOUR ADVENTURE ENDS HERE</div>
-  <h1>GAME<br><span>OVER.</span></h1>
-  <p id="message">The jungle claims another runner.</p>
-  <button class="mainbtn" id="again">RUN AGAIN &nbsp; ↻</button>
-  <div class="hint">TIP: WATCH THE ROAD AHEAD!</div>
- </div>
-</div>
-
-<div class="controls">
- <div class="group">
-  <button class="ctrl" data-a="left">◀</button>
-  <button class="ctrl" data-a="right">▶</button>
- </div>
- <div class="group">
-  <button class="ctrl" data-a="slide">▼</button>
-  <button class="ctrl" data-a="jump">▲</button>
- </div>
-</div>
-
-<script type="importmap">
-{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}
-</script>
-
-<script type="module">
-import * as THREE from 'three';
-
-const $=id=>document.getElementById(id);
-let scene,camera,renderer,player;
-let state='menu',lane=0,jumpY=0,jumpV=0,slide=0;
-let distance=0,coinCount=0,best=Number(localStorage.getItem('templeDashBest')||0);
-let speed=18,last=0,spawn=0,coinSpawn=0,toastTime=0;
-let obstacles=[],coins=[],decor=[],roadMarks=[],dust=[];
-$('best').textContent=best;
-
-const mat=(color,roughness=0.9,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
-const green=mat(0x204c2b),darkGreen=mat(0x102f20),leaf=mat(0x28663a);
-const stone=mat(0x82785c),lightStone=mat(0xb0a078),roadMat=mat(0x645d48);
-const gold= new THREE.MeshStandardMaterial({color:0xffc72e,metalness:.75,roughness:.22,emissive:0x805000,emissiveIntensity:.4});
-const brown=mat(0x674126),woodLight=mat(0x9c6738),shirt=mat(0x385941),skin=mat(0xc79468);
-const laneX=[-2.35,0,2.35];
-
-function box(parent,w,h,d,material,x,y,z){
- const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);
- m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;
-}
-function sphere(parent,r,material,x,y,z){
- const m=new THREE.Mesh(new THREE.SphereGeometry(r,12,10),material);
- m.position.set(x,y,z);m.castShadow=true;parent.add(m);return m;
-}
-function group(parent,x=0,y=0,z=0){
- const g=new THREE.Group();g.position.set(x,y,z);parent.add(g);return g;
-}
-function cylinder(parent,rt,rb,h,material,x,y,z,segments=10){
- const m=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,segments),material);
- m.position.set(x,y,z);m.castShadow=true;parent.add(m);return m;
-}
-
-function makeTree(x,z,scale=1){
- const g=group(scene,x,0,z);g.scale.setScalar(scale);
- cylinder(g,.24,.38,3.8,brown,0,1.9,0);
- for(let i=0;i<5;i++){
-  const crown=sphere(g,1.2-i*.1,i%2?green:leaf,
-    Math.sin(i*4)*.55,3.5+i*.65,Math.cos(i*3)*.45);
-  crown.scale.set(1.25,.75,1);
- }
- // vines
- for(let i=0;i<3;i++){
-  const v=cylinder(g,.035,.025,2.4,green,Math.sin(i*3)*.45,2.5,i*.2-.2,6);
-  v.rotation.z=.25+Math.sin(i)*.25;
- }
- decor.push({obj:g,kind:'tree'});
-}
-
-function makeTemple(){
- const g=group(scene,0,0,-88);
- // broad stairway
- for(let i=0;i<5;i++){
-  box(g,8-i*.75,.35,.9,stone,0,.18+i*.35,-i*.9);
- }
- // pillars and lintels
- for(const x of [-3.15,3.15]){
-  box(g,.75,6,.8,lightStone,x,3,-4.5);
-  box(g,1.05,.28,1.1,stone,x,1,.0);
-  for(let y=1.3;y<5;y+=1.15){
-   box(g,.83,.1,.87,stone,x,y,-4.5);
-  }
- }
- box(g,8,.9,1.1,stone,0,6.2,-4.5);
- box(g,7.1,.3,1.3,lightStone,0,6.8,-4.5);
- // triangular roof
- const roof=new THREE.Mesh(new THREE.ConeGeometry(5.1,2.8,4),stone);
- roof.position.set(0,8,-4.5);roof.rotation.y=Math.PI/4;roof.scale.set(1,.65,.45);roof.castShadow=true;g.add(roof);
- // dark entrance
- box(g,2.8,4,.25,mat(0x101c16),0,2,-3.95);
- // carved decorative blocks
- for(let i=0;i<7;i++){
-  box(g,.45,.45,.12,lightStone,-2.7+i*.9,5.1,-3.85);
- }
-}
-
-function makeRock(x,z,s=1){
- const g=group(scene,x,0,z);g.scale.setScalar(s);
- const m=new THREE.Mesh(new THREE.DodecahedronGeometry(1,1),stone);
- m.scale.set(.7,.8,.7);m.position.y=.68;m.castShadow=true;g.add(m);
- return g;
-}
-
-function makeRoad(){
- // road surface and dirt shoulders
- box(scene,8,.22,190,roadMat,0,-.16,-39);
- box(scene,18,.18,190,mat(0x263e27),0,-.31,-39);
- for(let x of [-4.08,4.08]){
-  box(scene,.13,.12,190,lightStone,x,-.03,-39);
- }
- // paving slabs
- for(let z=9;z>-130;z-=3.5){
-  const line=box(scene,7.85,.025,.045,mat(0x393b2d),0,-.035,z);
-  roadMarks.push(line);
- }
- // lane dashed markings
- for(let x of [-1.18,1.18]){
-  for(let z=8;z>-125;z-=7){
-   const line=box(scene,.045,.035,2,mat(0xc9b989),x,-.015,z);
-   roadMarks.push(line);
-  }
- }
- // jungle edges
- for(let z=10;z>-130;z-=8){
-  makeTree(-6.2+Math.sin(z)*.8,z,1.2+Math.sin(z*2)*.2);
-  makeTree(6.2+Math.cos(z)*.8,z-3,1.1+Math.cos(z)*.15);
-  if(z%16<1){
-   makeTree(-8,z-3,.85);
-   makeTree(8,z-7,.9);
-  }
- }
- makeTemple();
-}
-
-function makePlayer(){
- player=group(scene,0,0,2);
- // backpack
- box(player,.68,.92,.36,brown,.43,1.4,.08);
- box(player,.14,.7,.1,woodLight,.43,1.42,-.13);
- // torso and waist
- box(player,.85,1.05,.43,shirt,0,1.65,0);
- box(player,.72,.25,.47,brown,0,1.08,0);
- // head
- sphere(player,.34,skin,0,2.48,0);
- // hair and band
- sphere(player,.35,mat(0x34271d),0,2.65,.015);
- box(player,.72,.12,.42,woodLight,0,2.48,-.01);
- // face looks down the track (toward -Z)
- sphere(player,.055,mat(0x171812),-.12,2.49,-.3);
- sphere(player,.055,mat(0x171812),.12,2.49,-.3);
- box(player,.55,.12,brown,0,2.21,-.03);
- // arms
- const arms=[];
- for(let s of [-1,1]){
-  const arm=box(player,.24,.88,.27,skin,s*.55,1.65,0);
-  arm.rotation.z=s*.18;arms.push(arm);
- }
- // legs and boots
- const legs=[];
- for(let s of [-1,1]){
-  const leg=box(player,.31,.82,.34,mat(0x30392e),s*.23,.52,0);
-  legs.push(leg);
-  box(player,.38,.2,.55,mat(0x211c16),s*.23,.12,-.08);
- }
- player.userData={arms,legs};
-}
-
-function makeObstacle(type,l,z){
- const g=group(scene,laneX[l+1],0,z);
- if(type==='log'){
-  cylinder(g,.4,.4,2.7,woodLight,0,.53,0,12).rotation.z=Math.PI/2;
-  cylinder(g,.32,.32,.035,brown,0,.53,1.36,12);
-  for(let i=-1;i<=1;i++){
-   const band=cylinder(g,.414,.414,.12,brown,i*.65,.53,0,12);
-   band.rotation.z=Math.PI/2;
-  }
- }else if(type==='gate'){
-  box(g,2.3,.55,.4,mat(0x8d4d2e),0,2.1,0);
-  box(g,.25,2.4,.4,brown,-1.05,1.15,0);
-  box(g,.25,2.4,.4,brown,1.05,1.15,0);
-  box(g,2.5,.12,.5,woodLight,0,2.43,0);
- }else{
-  const m=new THREE.Mesh(new THREE.DodecahedronGeometry(.85,1),mat(0x74796a));
-  m.scale.set(1,.9,.8);m.position.y=.7;m.castShadow=true;g.add(m);
-  const top=new THREE.Mesh(new THREE.DodecahedronGeometry(.35,0),mat(0x999984));
-  top.position.set(-.2,1.1,-.2);g.add(top);
- }
- obstacles.push({obj:g,type,l,hit:false});
-}
-
-function makeCoinLine(){
- const l=Math.floor(Math.random()*3)-1;
- const n=5+Math.floor(Math.random()*3);
- for(let i=0;i<n;i++){
-  const g=group(scene,laneX[l+1],1.35,-36-i*2.1);
-  const c=new THREE.Mesh(new THREE.TorusGeometry(.32,.105,10,20),gold);
-  c.rotation.y=Math.PI/2;g.add(c);
-  const inner=new THREE.Mesh(new THREE.TorusGeometry(.19,.035,8,16),mat(0xffe99b,.25,.4));
-  inner.rotation.y=Math.PI/2;g.add(inner);
-  coins.push({obj:g,l,got:false,phase:Math.random()*6});
- }
-}
-
-function reset(){
- lane=0;jumpY=0;jumpV=0;slide=0;
- distance=0;coinCount=0;speed=18;spawn=.8;coinSpawn=1;
- obstacles.forEach(o=>scene.remove(o.obj));obstacles=[];
- coins.forEach(c=>scene.remove(c.obj));coins=[];
- player.position.set(0,0,2);
- // reset scrolling objects
- for(const d of decor){
-  if(d.kind==='tree'){
-   d.obj.position.z=-10-Math.random()*110;
-  }
- }
- roadMarks.forEach(m=>{m.position.z=-Math.random()*120});
- $('dist').textContent='0';$('coins').textContent='0';
- $('progress').style.width='0';
-}
-
-function start(){
- reset();state='playing';
- $('menu').classList.add('hidden');$('over').classList.add('hidden');
-}
-
-function end(){
- if(state!=='playing')return;
- state='over';
- best=Math.max(best,Math.floor(distance));
- localStorage.setItem('templeDashBest',best);
- $('best').textContent=best;
- $('message').textContent=`You ran ${Math.floor(distance)} metres and collected ${coinCount} gold coins. Can you beat your record?`;
- $('over').classList.remove('hidden');
-}
-
-function act(a){
- if(state!=='playing')return;
- if(a==='left')lane=Math.max(-1,lane-1);
- if(a==='right')lane=Math.min(1,lane+1);
- if(a==='jump'&&jumpY===0&&slide<=0)jumpV=10.5;
- if(a==='slide'&&jumpY<.3)slide=.8;
-}
-
-window.addEventListener('keydown',e=>{
- if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' '].includes(e.key))e.preventDefault();
- if(state!=='playing'){
-  if(e.key==='Enter'||e.key===' ')start();
-  return;
- }
- if(e.repeat)return;
- if(e.key==='ArrowLeft'||e.key.toLowerCase()==='a')act('left');
- if(e.key==='ArrowRight'||e.key.toLowerCase()==='d')act('right');
- if(e.key==='ArrowUp'||e.key===' ')act('jump');
- if(e.key==='ArrowDown'||e.key.toLowerCase()==='s')act('slide');
-});
-document.querySelectorAll('[data-a]').forEach(b=>{
- b.addEventListener('pointerdown',e=>{e.preventDefault();act(b.dataset.a)});
-});
-$('start').onclick=start;
-$('again').onclick=start;
-
-// Touch swipes
-let sx=0,sy=0;
-rendererTouch();
-function rendererTouch(){
- document.addEventListener('touchstart',e=>{
-  if(e.target.closest('button'))return;
-  sx=e.changedTouches[0].clientX;sy=e.changedTouches[0].clientY;
- },{passive:true});
- document.addEventListener('touchend',e=>{
-  if(e.target.closest('button'))return;
-  const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;
-  if(Math.abs(dx)>25||Math.abs(dy)>25){
-   if(Math.abs(dx)>Math.abs(dy))act(dx>0?'right':'left');
-   else act(dy<0?'jump':'slide');
-  }
- },{passive:true});
-}
-
-function init(){
- scene=new THREE.Scene();
- scene.background=new THREE.Color(0x9bc6a4);
- scene.fog=new THREE.Fog(0x8aaf8c,32,115);
-
- camera=new THREE.PerspectiveCamera(65,innerWidth/innerHeight,.1,220);
- camera.position.set(0,5.1,9.5);
- camera.lookAt(0,1,-9);
-
- renderer=new THREE.WebGLRenderer({antialias:true});
- renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));
- renderer.setSize(innerWidth,innerHeight);
- renderer.shadowMap.enabled=true;
- renderer.shadowMap.type=THREE.PCFSoftShadowMap;
- renderer.outputColorSpace=THREE.SRGBColorSpace;
- renderer.toneMapping=THREE.ACESFilmicToneMapping;
- renderer.toneMappingExposure=1.15;
- document.body.appendChild(renderer.domElement);
-
- scene.add(new THREE.HemisphereLight(0xc9e7ff,0x314222,2.1));
- const sun=new THREE.DirectionalLight(0xffe1a0,3);
- sun.position.set(-12,22,10);
- sun.castShadow=true;
- sun.shadow.mapSize.set(1024,1024);
- sun.shadow.camera.left=-15;sun.shadow.camera.right=15;
- sun.shadow.camera.top=20;sun.shadow.camera.bottom=-15;
- scene.add(sun);
-
- // distant misty jungle backdrop
- const back=box(scene,170,35,3,green,0,13,-105);
- back.material=mat(0x345b3e);
- // ground
- box(scene,180,.5,210,mat(0x183923),0,-.55,-43);
-
- makeRoad();
- makePlayer();
-
- // ancient ruins alongside the track
- for(let z=-18;z>-100;z-=24){
-  for(const side of [-1,1]){
-   const x=side*5.25;
-   box(scene,.5,2.5,.6,stone,x,1.25,z);
-   box(scene,.8,.22,.8,lightStone,x,2.6,z);
-   box(scene,.58,.13,.64,green,x,2.75,z);
-  }
- }
- window.addEventListener('resize',()=>{
-  camera.aspect=innerWidth/innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth,innerHeight);
- });
-}
-
-function update(dt){
- if(state!=='playing')return;
- distance+=speed*dt*.85;
- speed=Math.min(32,18+distance*.025);
- spawn-=dt;coinSpawn-=dt;
- if(spawn<=0){
-  const types=['rock','log','gate'];
-  makeObstacle(types[Math.floor(Math.random()*types.length)],Math.floor(Math.random()*3)-1,-65);
-  spawn=Math.max(.8,1.45-distance*.0005+Math.random()*.5);
- }
- if(coinSpawn<=0){makeCoinLine();coinSpawn=2.3+Math.random()*1.1}
-
- jumpY+=jumpV*dt;
- jumpV-=25*dt;
- if(jumpY<0){jumpY=0;jumpV=0}
- if(slide>0)slide-=dt;
-
- // animate running limbs
- const run=Math.sin(performance.now()*.014)*.65;
- player.position.x=THREE.MathUtils.lerp(player.position.x,laneX[lane+1],Math.min(1,dt*12));
- player.position.y=jumpY;
- if(slide>0){
-  player.scale.y=.58;
-  player.position.y=jumpY;
- }else{
-  player.scale.y=1;
-  player.userData.legs[0].rotation.x=run;
-  player.userData.legs[1].rotation.x=-run;
-  player.userData.arms[0].rotation.x=-run*.8;
-  player.userData.arms[1].rotation.x=run*.8;
- }
- player.rotation.z=THREE.MathUtils.lerp(player.rotation.z,-(laneX[lane+1]-player.position.x)*.08,.15);
-
- // objects approach the runner
- for(const o of obstacles){
-  o.obj.position.z+=speed*dt;
-  if(!o.hit&&o.obj.position.z>-.6&&o.obj.position.z<3.0&&o.l===lane){
-   const safe=o.type==='log'?jumpY>1.0:
-    o.type==='gate'?slide>0:jumpY>1.25;
-   if(!safe){o.hit=true;end();break}
-  }
- }
- obstacles=obstacles.filter(o=>{
-  if(o.obj.position.z>12){scene.remove(o.obj);return false}
-  return true;
- });
-
- for(const c of coins){
-  c.obj.position.z+=speed*dt;
-  c.obj.rotation.y+=dt*2.8;
-  c.obj.position.y=1.35+Math.sin(performance.now()*.004+c.phase)*.13;
-  if(!c.got&&c.obj.position.z>-.7&&c.obj.position.z<3&&c.l===lane){
-   c.got=true;coinCount++;
-   $('coins').textContent=coinCount;
-   $('toast').style.opacity=1;toastTime=.5;
-  }
- }
- coins=coins.filter(c=>{
-  if(c.got||c.obj.position.z>12){scene.remove(c.obj);return false}
-  return true;
- });
- if(toastTime>0){toastTime-=dt;if(toastTime<=0)$('toast').style.opacity=0}
-
- // Move the ground detail to create a sense of speed
- for(const m of roadMarks){
-  m.position.z+=speed*dt;
-  if(m.position.z>12)m.position.z=-120;
- }
- for(const d of decor){
-  d.obj.position.z+=speed*dt*.75;
-  if(d.obj.position.z>18)d.obj.position.z=-115-Math.random()*20;
- }
-
- $('dist').textContent=Math.floor(distance);
- $('best').textContent=best;
- $('progress').style.width=(distance%500)/5+'%';
-
- // Camera follows lane changes smoothly
- camera.position.x=THREE.MathUtils.lerp(camera.position.x,player.position.x*.38,dt*2.5);
- camera.lookAt(player.position.x*.17,1.2,-10);
-}
-
-function animate(now){
- requestAnimationFrame(animate);
- const dt=Math.min((now-last)/1000||0,.035);last=now;
- update(dt);
- renderer.render(scene,camera);
-}
-
 init();
 requestAnimationFrame(animate);
 </script>
